@@ -1,21 +1,17 @@
-# Set of build scripts for the Operating System for the Raven1106 SBC
+# raven1106-os
+
+OS build for the Raven1106 custom SBC, based on Buildroot.
 
 ## Building
 
-> Note that build is still W.I.P and there's no master build script
-
-
-**Building the build environment container**
+Enter the build environment (builds the Docker image on first run):
 ```sh
-sudo docker build -t rv1106-build .
+make docker
 ```
 
-**Starting the build environment container**
+Inside the container, build everything (Buildroot + bootloader):
 ```sh
-sudo docker run --rm -it -v "$PWD:/work" --user "$(id -u):$(id -g)" rv1106-build
+make
 ```
 
-**Building the toolchain**
-```sh
-./toolchain/build.sh
-```
+Other targets: `make buildrootconfig`, `make ubootconfig`, `make kernelconfig` to edit and save the respective defconfigs in `configs/`.
