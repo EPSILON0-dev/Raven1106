@@ -30,6 +30,10 @@ PREREQUISITES="
 	python3
 	vim
 	device-tree-compiler
+	e2fsprogs
+	fdisk
+	u-boot-tools
+	fakeroot
 "
 
 apt-get update

@@ -10,6 +10,9 @@ build:
 	make -C $(BUILDROOT_DIR) -j`nproc`
 	./scripts/build_bootloader.sh
 
+image:
+	./scripts/build_image.sh
+
 buildrootconfig:
 	make -C $(BUILDROOT_DIR) defconfig BR2_DEFCONFIG=$(BUILDROOT_CONFIG)
 	make -C $(BUILDROOT_DIR) menuconfig
@@ -20,10 +23,10 @@ ubootconfig:
 	make -C $(BUILDROOT_DIR) uboot-menuconfig
 	make -C $(BUILDROOT_DIR) uboot-update-defconfig BR2_DEFCONFIG=$(BUILDROOT_CONFIG)
 
-kernelconfig:
+linuxconfig:
 	make -C $(BUILDROOT_DIR) defconfig BR2_DEFCONFIG=$(BUILDROOT_CONFIG)
-	make -C $(BUILDROOT_DIR) kernel-menuconfig
-	make -C $(BUILDROOT_DIR) kernel-update-defconfig BR2_DEFCONFIG=$(BUILDROOT_CONFIG)
+	make -C $(BUILDROOT_DIR) linux-menuconfig
+	make -C $(BUILDROOT_DIR) linux-update-defconfig BR2_DEFCONFIG=$(BUILDROOT_CONFIG)
 
 docker:
 	./scripts/start_docker.sh
