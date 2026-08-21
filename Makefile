@@ -1,4 +1,4 @@
-default: build
+default: image
 
 CONFIGS := $(shell pwd)/configs
 
@@ -9,9 +9,11 @@ build:
 	make -C $(BUILDROOT_DIR) defconfig BR2_DEFCONFIG=$(BUILDROOT_CONFIG)
 	make -C $(BUILDROOT_DIR) -j`nproc`
 	./scripts/build_bootloader.sh
+	./scripts/build_dt.sh
 
-image:
-	./scripts/build_image.sh
+image: build
+	./scripts/collect_images.sh
+	./scripts/build_images.sh
 
 buildrootconfig:
 	make -C $(BUILDROOT_DIR) defconfig BR2_DEFCONFIG=$(BUILDROOT_CONFIG)

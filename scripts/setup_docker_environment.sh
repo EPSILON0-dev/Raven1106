@@ -34,6 +34,8 @@ PREREQUISITES="
 	fdisk
 	u-boot-tools
 	fakeroot
+	dosfstools
+	mtools
 "
 
 apt-get update

@@ -1,0 +1,61 @@
+/dts-v1/;
+
+#include "rv1106g-evb1-v10.dts"
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/leds/common.h>
+
+
+/ {
+    leds {
+        compatible = "gpio-leds";
+
+        led-status {
+            label = "status";
+            gpios = <&gpio3 RK_PD1 GPIO_ACTIVE_HIGH>;
+            linux,default-trigger = "mmc1";
+        };
+
+        led-activity {
+            label = "activity";
+            gpios = <&gpio3 RK_PD2 GPIO_ACTIVE_HIGH>;
+            linux,default-trigger = "activity";
+        };
+    };
+};
+
+/ {
+	model = "Epsiii Electric RAVEN 1106";
+	compatible = "rockchip,rv1106g-evb1-v11", "rockchip,rv1106";
+
+	/delete-node/ vcc5v0-usb;
+};
+
+&pinctrl {
+	/delete-node/ usb;
+};
+
+&sfc {
+	status = "okay";
+
+	flash@0 {
+		compatible = "spi-nand";
+		reg = <0>;
+		spi-max-frequency = <75000000>;
+		spi-rx-bus-width = <4>;
+		spi-tx-bus-width = <1>;
+	};
+};
+
+&u2phy_otg {
+	/delete-property/ vbus-supply;
+};
+
+&usbdrd_dwc3 {
+	dr_mode = "otg";
+};
+
+&vdd_arm {
+	regulator-min-microvolt = <800000>;
+	regulator-max-microvolt = <1000000>;
+	regulator-init-microvolt = <900000>;
+};

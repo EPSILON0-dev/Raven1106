@@ -1,2 +1,0 @@
-blkdevparts=mmcblk0:0x8000@0x0(env),0x80000@0x8000(idblock),0x40000@0x88000(uboot),64M@4M(boot),-(rootfs)
-sys_bootargs=console=ttyFIQ0,115200 root=/dev/mmcblk1p5 rootwait
