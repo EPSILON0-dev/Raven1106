@@ -9,3 +9,9 @@
 	path = uboot
 	url = https://github.com/rockchip-linux/u-boot
 	branch = next-dev
+[submodule "crosstool-ng"]
+	path = crosstool-ng
+	url = https://github.com/crosstool-ng/crosstool-ng
+[submodule "rkbin"]
+	path = rkbin
+	url = https://github.com/rockchip-linux/rkbin

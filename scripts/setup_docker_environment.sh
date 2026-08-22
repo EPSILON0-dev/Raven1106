@@ -36,6 +36,21 @@ PREREQUISITES="
 	fakeroot
 	dosfstools
 	mtools
+	gperf 
+	bison 
+	flex 
+	texinfo 
+	help2man    
+	autoconf 
+	automake 
+	libtool 
+	libtool-bin 
+	gawk 
+    xz-utils   
+	libstdc++6  
+	meson 
+	ninja-build
+	libzstd-dev
 "
 
 apt-get update

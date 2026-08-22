@@ -6,19 +6,23 @@ IMAGE_DIR="$ROOT_DIR/images"
 CONFIG_DIR="$ROOT_DIR/configs"
 BUILD_DIR="$ROOT_DIR/buildroot/output/build"
 
-UBOOT_BRANCH="next-dev"
-UBOOT_TOOLS="$BUILD_DIR/uboot-$UBOOT_BRANCH/tools"
-UBOOT_OUTPUT_DIR="$BUILD_DIR/uboot-$UBOOT_BRANCH"
+UBOOT_OUTPUT_DIR="$ROOT_DIR/uboot"
+UBOOT_TOOLS="$ROOT_DIR/uboot/tools"
 UBOOT_OUTPUTS="
-	rv1106_idblock_v1.15.102.img
+	download.bin
+	idblock.img
 	uboot.img
+"
+
+KERNEL_OUTPUT_DIR="$ROOT_DIR/kernel/arch/arm/boot"
+KERNEL_OUTPUTS="
+	zImage
 "
 
 BR2_OUTPUT_DIR="$ROOT_DIR/buildroot/output/images"
 BR2_OUTPUTS="
 	rootfs.ext4
 	rootfs.tar
-	zImage
 "
 
 # Create an output directory
@@ -26,8 +30,13 @@ mkdir -p $IMAGE_DIR
 
 # Copy uboot outputs
 echo "Coppying uboot outputs"
-cd $BR2_OUTPUT_DIR
-cp $BR2_OUTPUTS $IMAGE_DIR
+cd $UBOOT_OUTPUT_DIR
+cp $UBOOT_OUTPUTS $IMAGE_DIR
+
+# Copy kernel outputs
+echo "Coppying kernel outputs"
+cd $KERNEL_OUTPUT_DIR
+cp $KERNEL_OUTPUTS $IMAGE_DIR
 
 # Copy buildroot outputs
 echo "Coppying buildroot outputs"

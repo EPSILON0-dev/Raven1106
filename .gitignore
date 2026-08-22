@@ -1,1 +1,5 @@
-images
+images/
+toolchain/
+legacy-toolchain/
+.claude/
+.vscode/
