@@ -20,6 +20,18 @@
             gpios = <&gpio3 RK_PD1 GPIO_ACTIVE_HIGH>;
             linux,default-trigger = "activity";
         };
+
+        led-eth-connected {
+            label = "eth-connected";
+            gpios = <&gpio1 RK_PD3 GPIO_ACTIVE_HIGH>;
+            linux,default-trigger = "netdev";
+        };
+
+        led-eth-activity {
+            label = "eth-activity";
+            gpios = <&gpio1 RK_PD2 GPIO_ACTIVE_HIGH>;
+            linux,default-trigger = "netdev";
+        };
     };
 };
 

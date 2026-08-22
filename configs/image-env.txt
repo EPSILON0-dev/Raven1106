@@ -1,4 +1,3 @@
 blkdevparts=mmcblk1:0x8000@0x0(env),0x80000@0x8000(idblock),0x40000@0x88000(uboot),64M@4M(boot),-(rootfs)
-sys_bootargs="console=ttyFIQ0,115200 blkdevparts=mmcblk1:0x8000@0x0(env),0x80000@0x8000(idblock),0x40000@0x88000(uboot),64M@4M(boot),-(rootfs) root=/dev/mmcblk1p5 rootfstype=ext4 rootwait earlycon"
-bootcmd="fatload mmc 1:4 0x00008000 zImage; fatload mmc 1:4 0x00c00000 device-tree.dtb; bootz 0x00008000 - 0x00c00000"
-bootcmd2="fatload mmc 1:4 0x00008000 zImage; fatload mmc 1:4 0x00c00000 device-tree.dtb; bootz 0x00008000 - 0x00c00000"
+sys_bootargs=console=ttyFIQ0,115200 blkdevparts=mmcblk1:0x8000@0x0(env),0x80000@0x8000(idblock),0x40000@0x88000(uboot),64M@4M(boot),-(rootfs) root=/dev/mmcblk1p5 rootfstype=ext4 rootwait earlycon rk_dma_heap_cma=8M
+bootcmd=fatload mmc 1:4 0x00008000 zImage; fatload mmc 1:4 0x00c00000 device-tree.dtb; bootz 0x00008000 - 0x00c00000

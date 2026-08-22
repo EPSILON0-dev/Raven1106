@@ -779,7 +779,7 @@ CONFIG_ENV_IS_NOWHERE=y
 # CONFIG_ENV_AES is not set
 CONFIG_ENVF=y
 CONFIG_SPL_ENVF=y
-CONFIG_ENVF_LIST="blkdevparts mtdparts sys_bootargs app reserved ipaddr serverip netmask gatewayip ethaddr"
+CONFIG_ENVF_LIST="blkdevparts mtdparts sys_bootargs app reserved ipaddr serverip netmask gatewayip ethaddr bootcmd"
 # CONFIG_ENV_MEM_LAYOUT is not set
 CONFIG_ENV_OFFSET_REDUND=0x0
 CONFIG_ENV_NAND_OFFSET=0x0
@@ -983,11 +983,6 @@ CONFIG_ROCKCHIP_OTP=y
 # CONFIG_SPL_ROCKCHIP_HW_DECOMPRESS is not set
 # CONFIG_ROCKCHIP_SECURE_OTP is not set
 # CONFIG_SPL_ROCKCHIP_SECURE_OTP is not set
-# CONFIG_SPL_OTP_DISABLE_SD is not set
-# CONFIG_SPL_OTP_DISABLE_USB is not set
-# CONFIG_SPL_OTP_DISABLE_UART is not set
-# CONFIG_SPL_OTP_DISABLE_SPI2APB is not set
-# CONFIG_SPL_REVOKE_PUB_KEY is not set
 # CONFIG_CROS_EC is not set
 # CONFIG_DS4510 is not set
 # CONFIG_FSL_SEC_MON is not set
