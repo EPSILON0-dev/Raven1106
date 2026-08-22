@@ -14,6 +14,8 @@ dd if=/dev/zero of=boot.vfat bs=1M count=64
 mkfs.fat -F32 boot.vfat
 echo "Coppying zImage"
 mcopy -i boot.vfat zImage ::zImage
+echo "Coppying second zImage" # TODO DELETE
+mcopy -i boot.vfat zImage2 ::zImage2 # TODO DELETE
 echo "Coppying Device Tree Binary"
 mcopy -i boot.vfat device-tree.dtb ::device-tree.dtb
 
