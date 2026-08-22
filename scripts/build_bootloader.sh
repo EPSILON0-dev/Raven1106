@@ -4,7 +4,7 @@ set -eu
 ROOT_DIR="$(realpath $(dirname $0)/..)"
 BUILD_DIR="$ROOT_DIR/buildroot/output/build"
 
-TOOLCHAIN_PREFIX="$ROOT_DIR/buildroot/output/host/bin/arm-buildroot-linux-gnueabihf-"
+TOOLCHAIN_PREFIX="$ROOT_DIR/buildroot/output/host/bin/arm-buildroot-linux-musleabihf-"
 
 RKBIN_REPO="https://github.com/rockchip-linux/rkbin"
 UBOOT_BRANCH="next-dev"

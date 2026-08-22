@@ -6,10 +6,10 @@ IMAGE_DIR="$ROOT_DIR/images"
 CONFIG_DIR="$ROOT_DIR/configs"
 BUILD_DIR="$ROOT_DIR/buildroot/output/build"
 
-LINUX_BRANCH="develop-6.1"
+LINUX_BRANCH="develop-5.10"
 LINUX_DIR="$BUILD_DIR/linux-$LINUX_BRANCH"
 
-cpp \
+cpp -nostdinc \
 	-I "$LINUX_DIR/arch/arm/boot/dts" \
 	-I "$LINUX_DIR/include" \
 	-undef -x assembler-with-cpp \
