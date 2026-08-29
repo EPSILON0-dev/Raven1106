@@ -1,5 +1,10 @@
-images/
-toolchain/
-legacy-toolchain/
+# Environment
 .claude/
 .vscode/
+
+# Build artifacts
+toolchain/
+toolchain
+images/
+legacy-toolchain/
+overlay/usr/ko/*

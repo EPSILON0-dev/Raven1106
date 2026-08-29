@@ -46,3 +46,5 @@ cp $BR2_OUTPUTS $IMAGE_DIR
 # Create env image
 echo "Creating env image"
 "$UBOOT_TOOLS/mkenvimage" -s 0x8000 -p 0x0 -o "$IMAGE_DIR/env.img" "$CONFIG_DIR/image-env.txt"
+
+# Copy the modules

@@ -1,0 +1,31 @@
+#!/bin/sh
+set -eu
+
+ETH_ADDR="192.168.1.100/24"
+
+setup-ip()
+{
+    ip addr add "$ETH_ADDR" dev eth0
+    ip link set dev eth0 up
+}
+
+setup-leds()
+{
+    echo eth0 > /sys/class/leds/eth0::activity/device_name   
+    echo 1 > /sys/class/leds/eth0::activity/tx   
+    echo 1 > /sys/class/leds/eth0::activity/rx
+
+    echo eth0 > /sys/class/leds/eth0::connected/device_name   
+    echo 1 > /sys/class/leds/eth0::connected/link
+}
+
+start()
+{
+    setup-ip
+    setup-leds
+}
+
+case $1 in
+    start) start ;;
+    *) echo "Unknown command $1"; exit 1 ;; 
+esac

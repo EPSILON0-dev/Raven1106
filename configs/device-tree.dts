@@ -10,33 +10,42 @@
         compatible = "gpio-leds";
 
         led-status {
-            label = "status";
+            label = "::user";
             gpios = <&gpio3 RK_PD2 GPIO_ACTIVE_HIGH>;
             linux,default-trigger = "none";
         };
 
         led-activity {
-            label = "activity";
+            label = "::activity";
             gpios = <&gpio3 RK_PD1 GPIO_ACTIVE_HIGH>;
             linux,default-trigger = "activity";
         };
 
         led-eth-connected {
-            label = "eth-connected";
-            gpios = <&gpio1 RK_PD3 GPIO_ACTIVE_HIGH>;
+            label = "eth0::connected";
+            gpios = <&gpio1 RK_PD2 GPIO_ACTIVE_HIGH>;
             linux,default-trigger = "netdev";
+            netdev {
+                device-name = "eth0";
+                link;
+            };
         };
 
         led-eth-activity {
-            label = "eth-activity";
-            gpios = <&gpio1 RK_PD2 GPIO_ACTIVE_HIGH>;
+            label = "eth0::activity";
+            gpios = <&gpio1 RK_PD3 GPIO_ACTIVE_HIGH>;
             linux,default-trigger = "netdev";
+            netdev {
+                device-name = "eth0";
+                rx;
+                tx;
+            };
         };
     };
 };
 
 / {
-	model = "Epsiii Electric RAVEN 1106";
+	model = "RAVEN 1106";
 	compatible = "rockchip,rv1106g-evb1-v11", "rockchip,rv1106";
 
 	/delete-node/ vcc5v0-usb;
@@ -70,4 +79,15 @@
 	regulator-min-microvolt = <800000>;
 	regulator-max-microvolt = <1000000>;
 	regulator-init-microvolt = <900000>;
+};
+
+&sdio {
+	/delete-property/ mmc-pwrseq;
+	pinctrl-names = "default";
+	pinctrl-0 = <&sdmmc1m1_cmd &sdmmc1m1_clk &sdmmc1m1_bus4 &clk_32k>;
+
+	esp_wifi: sdio_wifi@1 {
+		compatible = "espressif,esp_sdio";
+		reg = <1>;
+	};
 };

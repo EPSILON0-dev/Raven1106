@@ -1,7 +1,9 @@
-default: image
+default: all
 
 CONFIG_DIR                 := $(shell pwd)/configs
 IMAGE_DIR                  := $(shell pwd)/images
+OVERLAY_DIR				   := $(shell pwd)/overlay
+TOOLCHAIN_LINK		   := $(shell pwd)/toolchain
 
 BUILDROOT_DIR              := $(shell pwd)/buildroot
 BUILDROOT_CONFIG           := $(shell pwd)/configs/buildroot-config
@@ -18,6 +20,10 @@ KERNEL_CONFIG              := $(shell pwd)/configs/kernel-config
 
 UBOOT_DIR                  := $(shell pwd)/uboot
 UBOOT_CONFIG			   := $(shell pwd)/configs/uboot-config 
+
+ESP_DRIVER_DIR		   := $(shell pwd)/esp-hosted/esp_hosted_ng/host
+
+all: image toolchain-link
 
 ######################################################################
 # Legacy toolchain (used for Kernel and Uboot)
@@ -45,8 +51,6 @@ legacytoolchain-config: crosstool
 
 uboot:
 	cp $(UBOOT_CONFIG) $(UBOOT_DIR)/.config
-#   make -C $(UBOOT_DIR) CROSS_COMPILE=$(LEGACY_TOOLCHAIN_PREFIX)
-#   cd $(UBOOT_DIR) && ./make.sh --spl $(CONFIG_DIR)/spl-pack.ini CROSS_COMPILE=$(LEGACY_TOOLCHAIN_PREFIX)
 	cd $(UBOOT_DIR) && ./make.sh $(CONFIG_DIR)/spl-pack.ini CROSS_COMPILE=$(LEGACY_TOOLCHAIN_PREFIX)
 
 uboot-config:
@@ -66,6 +70,7 @@ uboot-clean:
 KERNEL_BUILD_OPTS := \
 	CROSS_COMPILE=$(LEGACY_TOOLCHAIN_PREFIX) \
 	CC=$(LEGACY_TOOLCHAIN_PREFIX)gcc \
+	INSTALL_MOD_PATH=$(KERNEL_MODULES_DIR) \
 	ARCH=arm
 
 kernel:
@@ -92,12 +97,17 @@ dtb:
 		-I "$(KERNEL_DIR)/include" \
 		-undef -x assembler-with-cpp \
 		$(CONFIG_DIR)/device-tree.dts \
-		$(IMAGE_DIR)/device-tree.dts.pp
+		$(IMAGE_DIR)/device-tree.preprocessed.dts
 	dtc \
 		-I dts \
 		-O dtb \
 		-o $(IMAGE_DIR)/device-tree.dtb \
-		$(IMAGE_DIR)/device-tree.dts.pp
+		$(IMAGE_DIR)/device-tree.preprocessed.dts
+	dtc \
+		-I dtb \
+		-O dts \
+		-o $(IMAGE_DIR)/device-tree.flattened.dts \
+		$(IMAGE_DIR)/device-tree.dtb
 
 .PHONY: dtb
 
@@ -120,12 +130,49 @@ buildroot-clean:
 .PHONY: buildroot buildroot-config buildroot-clean
 
 ######################################################################
+# ESP32 SDIO driver
+######################################################################
+
+ESP_DRIVER_BUILD_OPTS := \
+	CROSS_COMPILE=$(BUILDROOT_TOOLCHAIN_PREFIX) \
+	KERNEL=$(KERNEL_DIR) \
+	ARCH=arm
+
+espdriver:
+	make -C $(ESP_DRIVER_DIR) $(ESP_DRIVER_BUILD_OPTS) -j`nproc`
+
+.PHONY: espdriver
+
+######################################################################
+# Toolchain link
+######################################################################
+
+toolchain-link: toolchain-link-clean
+	-ln -s $(BUILDROOT_HOST_BINARIES) $(TOOLCHAIN_LINK)
+
+toolchain-link-clean:
+	-rm $(TOOLCHAIN_LINK)
+
+.PHONY: toolchain-link toolchain-link-clean
+
+######################################################################
 # Final Image
 ######################################################################
 
-image: buildroot dtb uboot kernel
+overlay-modules:
+	-mkdir -p $(OVERLAY_DIR)/usr/ko
+	-cp -r $(KERNEL_MODULES_DIR)/lib/modules/* $(IMAGE_DIR)/overlay/lib/modules/
+
+image:
+	make kernel
+	./scripts/copy_kernel_modules.sh
+	make dtb
+	make uboot
+	make buildroot
 	./scripts/collect_images.sh
 	./scripts/build_images.sh
+
+.PHONY: overlay-modules image
 
 ######################################################################
 # Docker
@@ -133,3 +180,5 @@ image: buildroot dtb uboot kernel
 
 docker:
 	./scripts/start_docker.sh
+
+.PHONY: docker

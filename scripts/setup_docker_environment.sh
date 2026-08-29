@@ -46,11 +46,12 @@ PREREQUISITES="
 	libtool 
 	libtool-bin 
 	gawk 
-    xz-utils   
+	xz-utils   
 	libstdc++6  
 	meson 
 	ninja-build
 	libzstd-dev
+	python-is-python3
 "
 
 apt-get update

@@ -15,3 +15,6 @@
 [submodule "rkbin"]
 	path = rkbin
 	url = https://github.com/rockchip-linux/rkbin
+[submodule "esp-hosted"]
+	path = esp-hosted
+	url = https://github.com/espressif/esp-hosted
