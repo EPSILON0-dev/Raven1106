@@ -1,11 +1,56 @@
 /dts-v1/;
 
-#include "rv1106g-evb1-v10.dts"
+#include <dt-bindings/input/input.h>
 #include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/leds/common.h>
 
+#include "rv1106.dtsi"
 
 / {
+	model = "Raven 1106";
+	compatible = "rockchip,rv1106g-evb1-v11", "rockchip,rv1106";
+
+	rockchip_amp: rockchip-amp {
+		compatible = "rockchip,amp";
+		clocks = <&cru CLK_TIMER_ROOT>, <&cru PCLK_TIMER>, <&cru CLK_TIMER5>,
+			<&cru CLK_CORE_MCU>, <&cru CLK_CORE_MCU_RTC>, <&cru PCLK_MAILBOX>;
+
+		status = "okay";
+	};
+
+	restart-poweroff {
+		compatible = "restart-poweroff";
+	};
+
+	acodec_sound: acodec-sound {
+		compatible = "simple-audio-card";
+		simple-audio-card,name = "rv1106-acodec";
+		simple-audio-card,format = "i2s";
+		simple-audio-card,mclk-fs = <256>;
+		simple-audio-card,cpu {
+			sound-dai = <&i2s0_8ch>;
+		};
+		simple-audio-card,codec {
+			sound-dai = <&acodec>;
+		};
+	};
+
+	dsm_sound: dsm-sound {
+		status = "disabled";
+		compatible = "simple-audio-card";
+		simple-audio-card,format = "i2s";
+		simple-audio-card,mclk-fs = <256>;
+		simple-audio-card,name = "rockchip,dsm-sound";
+		simple-audio-card,bitclock-master = <&sndcodec>;
+		simple-audio-card,frame-master = <&sndcodec>;
+		sndcpu: simple-audio-card,cpu {
+			sound-dai = <&i2s0_8ch>;
+		};
+		sndcodec: simple-audio-card,codec {
+			sound-dai = <&dsm>;
+		};
+	};
+
     leds {
         compatible = "gpio-leds";
 
@@ -44,50 +89,125 @@
     };
 };
 
-/ {
-	model = "RAVEN 1106";
-	compatible = "rockchip,rv1106g-evb1-v11", "rockchip,rv1106";
 
-	/delete-node/ vcc5v0-usb;
+&fiq_debugger {
+	rockchip,irq-mode-enable = <1>;
+	status = "okay";
 };
 
-&pinctrl {
-	/delete-node/ usb;
+&gmac {
+	status = "okay";
+};
+
+&i2s0_8ch {
+	#sound-dai-cells = <0>;
+	status = "okay";
+};
+
+&mpp_srv {
+	status = "okay";
+};
+
+&mpp_vcodec {
+	status = "okay";
+};
+
+&npu {
+	status = "okay";
+};
+
+&rga2 {
+	status = "okay";
+};
+
+&rkdvbm {
+	status = "okay";
+};
+
+&rkvenc {
+	status = "okay";
+};
+
+&rkvenc_pp {
+	status = "okay";
+};
+
+&rmii_phy {
+	bgs,increment = <0>;
+};
+
+&rng {
+	status = "okay";
+};
+
+&rve {
+	status = "okay";
+};
+
+&tsadc {
+	status = "okay";
+};
+
+&u2phy {
+	status = "okay";
+};
+
+&u2phy_otg {
+	status = "okay";
+};
+
+&usbdrd {
+	status = "okay";
+};
+
+&usbdrd_dwc3 {
+	extcon = <&u2phy>;
+	dr_mode = "otg";
+	status = "okay";
+};
+
+&acodec {
+	#sound-dai-cells = <0>;
+	pa-ctl-gpios = <&gpio1 RK_PA1 GPIO_ACTIVE_HIGH>;
+	status = "okay";
+};
+
+&emmc {
+	bus-width = <8>;
+	cap-mmc-highspeed;
+	non-removable;
+	mmc-ddr-1_8v;
+	mmc-hs200-1_8v;
+	rockchip,default-sample-phase = <90>;
+	no-sdio;
+	no-sd;
+	status = "okay";
+};
+
+&dsm {
+	status = "disabled";
+};
+
+#include "rv1106-evb-cam.dtsi"
+
+&sdmmc {
+	max-frequency = <200000000>;
+	no-sdio;
+	no-mmc;
+	bus-width = <4>;
+	cap-mmc-highspeed;
+	cap-sd-highspeed;
+	disable-wp;
+	pinctrl-names = "normal", "idle";
+	pinctrl-0 = <&sdmmc0_clk &sdmmc0_cmd &sdmmc0_det &sdmmc0_bus4>;
+	pinctrl-1 = <&sdmmc0_idle_pins &sdmmc0_det>;
+	sd-uhs-sdr12;
+	sd-uhs-sdr25;
+	sd-uhs-sdr50;
+	sd-uhs-sdr104;
+	status = "okay";
 };
 
 &sfc {
 	status = "okay";
-
-	flash@0 {
-		compatible = "spi-nand";
-		reg = <0>;
-		spi-max-frequency = <75000000>;
-		spi-rx-bus-width = <4>;
-		spi-tx-bus-width = <1>;
-	};
-};
-
-&u2phy_otg {
-	/delete-property/ vbus-supply;
-};
-
-&usbdrd_dwc3 {
-	dr_mode = "otg";
-};
-
-&vdd_arm {
-	regulator-min-microvolt = <800000>;
-	regulator-max-microvolt = <1000000>;
-	regulator-init-microvolt = <900000>;
-};
-
-&sdio {
-	/delete-property/ mmc-pwrseq;
-	pinctrl-names = "default";
-	pinctrl-0 = <&sdmmc1m1_cmd &sdmmc1m1_clk &sdmmc1m1_bus4 &clk_32k>;
-
-	esp_wifi: sdio_wifi@1 {
-		compatible = "espressif,esp_sdio";
-		reg = <1>;
-	};
 };

@@ -136,7 +136,8 @@ buildroot-clean:
 ESP_DRIVER_BUILD_OPTS := \
 	CROSS_COMPILE=$(BUILDROOT_TOOLCHAIN_PREFIX) \
 	KERNEL=$(KERNEL_DIR) \
-	ARCH=arm
+	ARCH=arm \
+	target=spi
 
 espdriver:
 	make -C $(ESP_DRIVER_DIR) $(ESP_DRIVER_BUILD_OPTS) -j`nproc`

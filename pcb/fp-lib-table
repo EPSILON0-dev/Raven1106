@@ -1,0 +1,6 @@
+(fp_lib_table
+	(version 7)
+	(lib (name "library") (type "KiCad") (uri "${KIPRJMOD}/library") (options "") (descr ""))
+	(lib (name "FPC_Connector") (type "KiCad") (uri "${KIPRJMOD}/library/FPC_Connector.pretty") (options "") (descr ""))
+	(lib (name "Microphone") (type "KiCad") (uri "${KIPRJMOD}/library/Microphone.pretty") (options "") (descr ""))
+)
