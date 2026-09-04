@@ -1,0 +1,16 @@
+#!/bin/sh
+
+set -eu
+
+start()
+{
+	[ -e /etc/.rootfs-resized ] && exit 0
+
+	resize2fs /dev/mmcblk1p5
+	touch /etc/.rootfs-resized
+}
+
+case "$1" in
+	start) start ;;
+	*) ;;
+esac

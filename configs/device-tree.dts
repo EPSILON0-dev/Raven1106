@@ -162,7 +162,8 @@
 
 &usbdrd_dwc3 {
 	extcon = <&u2phy>;
-	dr_mode = "otg";
+	dr_mode = "host";
+	maximum-speed = "high-speed";
 	status = "okay";
 };
 
@@ -187,7 +188,7 @@
 &dsm {
 	status = "disabled";
 };
-
+ 
 #include "rv1106-evb-cam.dtsi"
 
 &sdmmc {
@@ -208,6 +209,6 @@
 	status = "okay";
 };
 
-&sfc {
+&spi0 {
 	status = "okay";
 };

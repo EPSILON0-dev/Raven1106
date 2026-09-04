@@ -52,6 +52,7 @@ PREREQUISITES="
 	ninja-build
 	libzstd-dev
 	python-is-python3
+	libssl-dev
 "
 
 apt-get update
