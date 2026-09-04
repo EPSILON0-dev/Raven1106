@@ -7,4 +7,6 @@ toolchain/
 toolchain
 images/
 legacy-toolchain/
-overlay/usr/ko/*
+buildroot-overlayfs/usr/ko/*
+tmp/
+dl/

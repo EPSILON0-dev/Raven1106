@@ -1,8 +1,8 @@
 FROM debian:12
 
-COPY ./scripts/setup_docker_environment.sh /tmp/setup.sh
+COPY ./scripts/build.sh /tmp/setup.sh
 
-RUN sh /tmp/setup.sh && rm /tmp/setup.sh
+RUN sh /tmp/setup.sh setup && rm /tmp/setup.sh
 
 VOLUME /work
 WORKDIR /work

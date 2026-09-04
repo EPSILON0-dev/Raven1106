@@ -189,8 +189,6 @@
 	status = "disabled";
 };
  
-#include "rv1106-evb-cam.dtsi"
-
 &sdmmc {
 	max-frequency = <200000000>;
 	no-sdio;
@@ -211,4 +209,40 @@
 
 &spi0 {
 	status = "okay";
+};
+ 
+#include "rv1106-evb-cam.dtsi"
+
+&csi2_dphy0 {
+	ports {
+		port@0 {
+			/delete-node/ endpoint@0;
+			/delete-node/ endpoint@2;
+			/delete-node/ endpoint@3;
+			/delete-node/ endpoint@4;
+			/delete-node/ endpoint@5;
+			/delete-node/ endpoint@6;
+			/delete-node/ endpoint@7;
+			/delete-node/ endpoint@8;
+			/delete-node/ endpoint@9;
+		};
+	};
+};
+
+&i2c4 {
+	/delete-node/ sc530ai@30;
+	/delete-node/ sc3338@30;
+	/delete-node/ sc4336@30;
+	/delete-node/ os04a10@36;
+	/delete-node/ jx_k17@40;
+	/delete-node/ imx415@1a;
+	/delete-node/ sc450ai@30;
+	/delete-node/ sc401ai@30;
+	/delete-node/ sc200ai@30;
+};
+
+&sc3336 {
+	clocks = <&cru MCLK_REF_MIPI1>;
+	reset-gpios = <&gpio3 RK_PC4 GPIO_ACTIVE_HIGH>;
+	pinctrl-0 = <&mipi_refclk_out1>;
 };

@@ -23,7 +23,7 @@ UBOOT_CONFIG			   := $(shell pwd)/configs/uboot-config
 
 ESP_DRIVER_DIR		   := $(shell pwd)/esp-hosted/esp_hosted_ng/host
 
-all: image toolchain-link
+all: br2-image toolchain-link
 
 ######################################################################
 # Legacy toolchain (used for Kernel and Uboot)
@@ -160,26 +160,29 @@ toolchain-link-clean:
 # Final Image
 ######################################################################
 
-overlay-modules:
-	-mkdir -p $(OVERLAY_DIR)/usr/ko
-	-cp -r $(KERNEL_MODULES_DIR)/lib/modules/* $(IMAGE_DIR)/overlay/lib/modules/
-
-image:
+br2-image:
+	@-mkdir images
 	make kernel
-	./scripts/copy_kernel_modules.sh
 	make dtb
 	make uboot
+	./scripts/build.sh copy-modules
 	make buildroot
-	./scripts/collect_images.sh
-	./scripts/build_images.sh
+	./scripts/build.sh buildroot-image
 
-.PHONY: overlay-modules image
+ubuntu-image:
+	@-mkdir images
+	make kernel
+	make dtb
+	make uboot
+	./scripts/build.sh ubuntu-image
+
+.PHONY: br2-image ubuntu-image
 
 ######################################################################
 # Docker
 ######################################################################
 
 docker:
-	./scripts/start_docker.sh
+	./scripts/build.sh docker
 
 .PHONY: docker

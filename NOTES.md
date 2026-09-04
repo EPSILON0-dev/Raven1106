@@ -19,14 +19,6 @@ Fix:
 
 No board design modifications
 
-### SD Card on wrong SDIO
-
-The SD card is connected to `SDIO1` and RV1106 can only boot from `SDIO0`. Problem is unfixable without a major redesign.
-
-Fix: Use the FSPI flash as a trampoline, populate `U202` and `C201`
-
-Board design modifications: Change `U202` and `C201` from DNP to populated
-
 ### No pullups on FSPI Flash
 
 Mask ROM reads the FSPI flash in a simple SPI mode, in that mode pin 7 (D3) acts as /HOLD and pin 3 (D2) acts as /WP. While not critical, some chips may not be read correctly.
@@ -50,3 +42,11 @@ Status LEDs shine too bright with 1kohm resistors.
 Fix: Swap `R3`, `R4` and `R5` with 10kohm resistors.
 
 Board design modifications: Change `R3`, `R4` and `R5` values from 1kohm to 10kohm.
+
+### Reference clock not connected to the camera
+
+Turns out not all Camera modules have their own crystal oscillators. SC3336 requires a reference clock, one ref output is connected to it's reset and the other to the IMU interrupt pin.
+
+Fix: Add a jumper from R508 to R515.
+
+Board design modifications: Swap pins `GPIO3_C5` and `GPIO3_C6` 
