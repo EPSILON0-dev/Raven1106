@@ -43,6 +43,22 @@ Fix: Swap `R3`, `R4` and `R5` with 10kohm resistors.
 
 Board design modifications: Change `R3`, `R4` and `R5` values from 1kohm to 10kohm.
 
+### Boot button pull-up too strong
+
+Boot button pullup is too strong.
+
+Fix: Change `R6` from 1k to 10k.
+
+No board design modifications
+
+### USB Hub crystal load too large
+
+The CH334F is designed to work with a crystal with no load caps.
+
+Fix: Change `R309` from `1k` to `10ohm`, remove `C302` and `C303`.
+
+No board design modifications
+
 ### Reference clock not connected to the camera
 
 Turns out not all Camera modules have their own crystal oscillators. SC3336 requires a reference clock, one ref output is connected to it's reset and the other to the IMU interrupt pin.

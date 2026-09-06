@@ -6,11 +6,9 @@ ROOT_DIR="$(realpath $(dirname $0)/..)"
 IMAGE_DIR="$ROOT_DIR/images"
 CONFIG_DIR="$ROOT_DIR/configs"
 BUILD_DIR="$ROOT_DIR/buildroot/output/build"
-OVERLAY_DIR="$ROOT_DIR/overlay"
+BR2_OVERLAY_DIR="$ROOT_DIR/buildroot-overlayfs"
 KERNEL_DIR="$ROOT_DIR/kernel"
-MODULES_DIR="$OVERLAY_DIR/usr/ko"
-
-UBUNTU_LINK="https://cloud-images.ubuntu.com/releases/server/jammy/release/ubuntu-22.04-server-cloudimg-armhf-root.tar.xz"
+MODULES_DIR="$BR2_OVERLAY_DIR/usr/ko"
 
 BR2_HOST_BIN="$ROOT_DIR/buildroot/output/host/bin"
 
@@ -140,31 +138,6 @@ build_image()
         --config "$CONFIG_DIR/sdcard-image.cfg"
 }
 
-get_ubuntu_rootfs()
-{
-    if [ ! -f $ROOT_DIR/tmp/ubuntu-rootfs.tar.xz ]; then
-        printout "Downloading ubuntu rootfs"
-        curl "$UBUNTU_LINK" -o $ROOT_DIR/tmp/ubuntu-rootfs.tar.xz
-    else
-        printout "Ubuntu rootfs already downloaded"
-    fi
-
-    if [ ! -f $ROOT_DIR/tmp/rootfs.ext4 ]; then
-        printout "Unpacking tarball to the rootfs partition"
-        mkdir -p $ROOT_DIR/tmp/rootfs
-        unxz -k $ROOT_DIR/tmp/ubuntu-rootfs.tar.xz
-        tar xf $ROOT_DIR/tmp/ubuntu-rootfs.tar -C $ROOT_DIR/tmp/rootfs
-
-        printout "Creating rootfs partition image"
-        truncate -s 2G $ROOT_DIR/tmp/rootfs.ext4
-        mkfs.ext4 -d $ROOT_DIR/tmp/rootfs $ROOT_DIR/tmp/rootfs.ext4
-    else
-        printout "Rootfs partition image already built"
-    fi
-
-    cp $ROOT_DIR/tmp/rootfs.ext4 $IMAGE_DIR/rootfs.ext4
-}
-
 build_image_common()
 {
     copy_uboot_out
@@ -179,18 +152,10 @@ build_br2_image()
     build_image
 }
 
-build_ubuntu_image()
-{
-    build_image_common
-    get_ubuntu_rootfs
-    build_image
-}
-
 case "$1" in
     setup) setup_docker_env ;;
     docker) start_docker_env ;;
     copy-modules) copy_kernel_modules ;;
     buildroot-image) build_br2_image ;;
-    ubuntu-image) build_ubuntu_image ;;
     *) unknown_command ;;
 esac

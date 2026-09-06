@@ -169,14 +169,7 @@ br2-image:
 	make buildroot
 	./scripts/build.sh buildroot-image
 
-ubuntu-image:
-	@-mkdir images
-	make kernel
-	make dtb
-	make uboot
-	./scripts/build.sh ubuntu-image
-
-.PHONY: br2-image ubuntu-image
+.PHONY: br2-image
 
 ######################################################################
 # Docker
