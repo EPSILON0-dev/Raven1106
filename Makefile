@@ -169,7 +169,14 @@ br2-image:
 	make buildroot
 	./scripts/build.sh buildroot-image
 
-.PHONY: br2-image
+debian-image:
+	@-mkdir images
+	make kernel
+	make dtb
+	make uboot
+	./scripts/build.sh debian-image
+
+.PHONY: br2-image debian-image
 
 ######################################################################
 # Docker

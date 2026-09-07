@@ -1,6 +1,16 @@
-# raven1106-os
+# Raven1106
 
-OS build for the Raven1106 custom SBC, based on Buildroot.
+Raspberry Pi like Single Board Computer based on the Rockchip RV1106.
+
+**Board Image**
+
+## Overview
+
+## Hardware
+
+## Operating System
+
+## Demos
 
 ## Building
 
