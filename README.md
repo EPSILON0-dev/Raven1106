@@ -2,7 +2,7 @@
 
 Raspberry Pi-like single board computer based on the Rockchip RV1106G3.
 
-[PLACEHOLDER: board photo]
+![Assembled Board Photo](docs/pcb-images/photo.jpg)
 
 ## Overview
 
