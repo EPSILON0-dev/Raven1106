@@ -89,11 +89,22 @@ mounted at `/work`:
 make docker
 ```
 
-### Debian image (default)
+### Toolchain
+
+Before building any image build the legacy toolchain for the Kernel and U-Boot.
+```sh
+make legacytoolchain
+```
+
+### Debian image
 
 ```sh
+make            # default target: debian-image + toolchain-link
+# or explicitly:
 make debian-image
 ```
+
+> Known issue: If build fails on stage 2 debootstrap because of "Invalid format", just delete the `debian/` directory, restart the container and try to build again. _It does that sometimes..._
 
 This builds the kernel, device tree, and U-Boot, then creates a Debian 12
 (bookworm, armhf) rootfs with debootstrap (using qemu-user-static/binfmt for
@@ -113,8 +124,6 @@ Notes:
 ### Buildroot image
 
 ```sh
-make            # default target: br2-image + toolchain-link
-# or explicitly:
 make br2-image
 ```
 

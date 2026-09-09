@@ -17,18 +17,20 @@ UBOOT_OUTPUT_DIR="$ROOT_DIR/uboot"
 UBOOT_TOOLS="$ROOT_DIR/uboot/tools"
 UBOOT_ARTIFACTS="download.bin idblock.img uboot.img"
 KERNEL_OUTPUT_DIR="$ROOT_DIR/kernel/arch/arm/boot"
-KERNEL_ARTIFACTS="Image"
+KERNEL_ARTIFACTS="zImage"
 BR2_OUTPUT_DIR="$ROOT_DIR/buildroot/output/images"
 BR2_ARTIFACTS="rootfs.ext4 rootfs.tar"
 BR2_HOST_BIN="$ROOT_DIR/buildroot/output/host/bin"
+ESP_HOSTED_DIR="$ROOT_DIR/esp-hosted"
 
 # Debian configuration
-DEBIAN_PACKAGES="systemd-sysv,ifupdown,openssh-server,sudo,less,vim-tiny,ca-certificates,isc-dhcp-client,busybox"
+DEBIAN_KERNEL_VERSION="5.10.252"
 DEBIAN_USER="${BOARD_USER:-debian}"
 DEBIAN_PASSWORD="${DEBIAN_PASSWORD:-raven}"
 DEBIAN_SUITE="bookworm"  # Needs to match the one in the overlayfs 
 DEBIAN_MIRROR="${DEBIAN_MIRROR:-http://deb.debian.org/debian}"
-DEBIAN_ROOTFS_SIZE="512M"
+DEBIAN_ROOTFS_SIZE="1G"
+DEBIAN_PACKAGES_FILE="$CONFIG_DIR/debian-package-list.txt"
 
 printout()
 {
@@ -105,9 +107,15 @@ copy_buildroot_out()
 copy_kernel_modules()
 {
     mkdir -p $MODULES_DIR
+
     for module in $(find $KERNEL_DIR -name '*.ko'); do
         printout "Copying kernel module: $module"
-        cp $module $MODULES_DIR
+        install -o 0 -g 0 -m 644 $module $MODULES_DIR
+    done
+
+    for module in $(find $ESP_HOSTED_DIR -name '*.ko'); do
+        printout "Copying kernel module: $module"
+        install -o 0 -g 0 -m 644 $module $MODULES_DIR
     done
 }
 
@@ -116,7 +124,7 @@ setup_debootstrap_env()
     if ! mount | grep binfmt_misc > /dev/null 2> /dev/null; then
         printout "Mounting binfmt_misc"
         mount -t binfmt_misc binfmt_misc /proc/sys/fs/binfmt_misc
-        echo ':qemu-arm:m::\x7felf\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x28\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-arm-static:f' > /proc/sys/fs/binfmt_misc/register || true
+	echo ':qemu-arm:M::\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff:/usr/bin/qemu-arm-static:CF' > /proc/sys/fs/binfmt_misc/register || true
     else
         printout "Already mounted binfmt_misc"
     fi
@@ -124,19 +132,15 @@ setup_debootstrap_env()
 
 build_debootstrap_rootfs()
 {
+    debian_packages=`sed ':a;N;$!ba;s/\n/,/g' $DEBIAN_PACKAGES_FILE`
     mkdir -p $DEBIAN_ROOTFS_DIR
     printout "Running debootstrap stage 1"
+    printout "Installing packages: $debian_packages"
     debootstrap --arch="armhf" --foreign --variant=minbase \
-        --include="${DEBIAN_PACKAGES}" \
+        --include="$debian_packages" \
         "${DEBIAN_SUITE}" "${DEBIAN_ROOTFS_DIR}" "${DEBIAN_MIRROR}"
     printout "Running debootstrap stage 2"
     chroot $DEBIAN_ROOTFS_DIR /debootstrap/debootstrap --second-stage
-}
-
-copy_debian_overlayfs()
-{
-    printout "Copying debian overlayfs"
-    cp -r $DEBIAN_OVERLAYFS_DIR/* $DEBIAN_ROOTFS_DIR
 }
 
 debian_chroot_setup_script()
@@ -147,13 +151,51 @@ debian_chroot_setup_script()
     apt-get update
     apt-get upgrade -y --no-install-recommends openssh-server sudo
 
-    printout "chroot: Enabling ssh"
-    systemctl enable ssh
-
     printout "chroot: Adding user"
     useradd -m -s /bin/bash -G sudo "$DEBIAN_USER"
     echo "$DEBIAN_USER:$DEBIAN_PASSWORD" | chpasswd
     apt-get clean
+
+    printout "Fixing debian overlayfs permissions"
+    cat /manifest.txt | while read name user group perms; do
+	chmod $perms "/$name"
+	chown $user:$group "/$name"
+    done
+
+    rm /manifest.txt
+
+    printout "chroot: Enabling ssh"
+    systemctl enable ssh
+    systemctl enable firstboot-resize.service
+    systemctl enable setup-eth0-leds.service
+}
+
+copy_debian_overlayfs()
+{
+    printout "Copying debian overlayfs"
+    cat $DEBIAN_OVERLAYFS_DIR/manifest.txt | while read name user group perms; do
+    	mkdir -p `dirname "$DEBIAN_ROOTFS_DIR/$name"`
+        cp -r "$DEBIAN_OVERLAYFS_DIR/$name" "$DEBIAN_ROOTFS_DIR/$name"
+    done
+
+    cp -r "$DEBIAN_OVERLAYFS_DIR/manifest.txt" "$DEBIAN_ROOTFS_DIR/manifest.txt"
+}
+
+copy_debian_modules()
+{
+    printout "Copying debian modules"
+    module_dir="$DEBIAN_ROOTFS_DIR/lib/modules/$DEBIAN_KERNEL_VERSION"
+    mkdir -p "$module_dir"
+
+    for module in $(find $KERNEL_DIR -name '*.ko'); do
+        printout "Copying kernel module: $module"
+        install -o 0 -g 0 -m 644 $module $module_dir
+    done
+
+    for module in $(find $ESP_HOSTED_DIR -name '*.ko'); do
+        printout "Copying kernel module: $module"
+        install -o 0 -g 0 -m 644 $module $module_dir
+    done
 }
 
 debian_chroot_setup()
@@ -168,6 +210,11 @@ build_debian_rootfs_image()
    truncate -s $DEBIAN_ROOTFS_SIZE $DEBIAN_DIR/rootfs.ext4
    mkfs.ext4 -d $DEBIAN_DIR/rootfs/ $DEBIAN_DIR/rootfs.ext4 
    cp $DEBIAN_DIR/rootfs.ext4 $IMAGE_DIR
+}
+
+cleanup_debian_workdir()
+{
+   rm -rf $DEBIAN_DIR
 }
 
 create_env_image()
@@ -218,9 +265,11 @@ build_debian_image()
     setup_debootstrap_env
     build_debootstrap_rootfs
     copy_debian_overlayfs
+    copy_debian_modules
     debian_chroot_setup
     build_debian_rootfs_image
     build_image
+    cleanup_debian_workdir
 }
 
 case "$1" in

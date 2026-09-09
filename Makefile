@@ -23,7 +23,7 @@ UBOOT_CONFIG			   := $(shell pwd)/configs/uboot-config
 
 ESP_DRIVER_DIR		   := $(shell pwd)/esp-hosted/esp_hosted_ng/host
 
-all: br2-image toolchain-link
+all: debian-image toolchain-link
 
 ######################################################################
 # Legacy toolchain (used for Kernel and Uboot)
@@ -174,6 +174,7 @@ debian-image:
 	make kernel
 	make dtb
 	make uboot
+	make espdriver
 	./scripts/build.sh debian-image
 
 .PHONY: br2-image debian-image

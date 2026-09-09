@@ -1,0 +1,13 @@
+[Unit]
+Description=Resize root filesystem on first boot
+After=local-fs.target
+Before=getty.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/resize2fs /dev/mmcblk1p5
+ExecStart=/usr/bin/systemctl disable firstboot-resize.service
+RemainAfterExit=no
+
+[Install]
+WantedBy=multi-user.target

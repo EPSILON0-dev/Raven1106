@@ -1,0 +1,20 @@
+[Unit]
+Description=Configure Ethernet LEDs
+Before=network.target
+
+[Service]
+Type=oneshot
+
+ExecStart=/bin/sh -c 'echo netdev > /sys/class/leds/eth0::connected/trigger'
+ExecStart=/bin/sh -c 'echo eth0 > /sys/class/leds/eth0::connected/device_name'
+ExecStart=/bin/sh -c 'echo 1 > /sys/class/leds/eth0::connected/link'
+
+ExecStart=/bin/sh -c 'echo netdev > /sys/class/leds/eth0::activity/trigger'
+ExecStart=/bin/sh -c 'echo eth0 > /sys/class/leds/eth0::activity/device_name'
+ExecStart=/bin/sh -c 'echo 1 > /sys/class/leds/eth0::activity/rx'
+ExecStart=/bin/sh -c 'echo 1 > /sys/class/leds/eth0::activity/tx'
+
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
