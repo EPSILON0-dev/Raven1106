@@ -21,3 +21,4 @@ lua5.4
 python3
 python3-pip
 python-is-python3
+curl

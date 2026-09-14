@@ -7,3 +7,5 @@ etc/ssh/sshd_config root root 644
 etc/systemd/system/firstboot-resize.service root root 644
 etc/systemd/system/setup-eth0-leds.service root root 644
 home/debian/.bashrc debian debian 644
+home/debian/.bash_login debian debian 644
+usr/bin/esp-connect root root 755

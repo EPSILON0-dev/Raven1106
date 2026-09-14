@@ -22,6 +22,7 @@ BR2_OUTPUT_DIR="$ROOT_DIR/buildroot/output/images"
 BR2_ARTIFACTS="rootfs.ext4 rootfs.tar"
 BR2_HOST_BIN="$ROOT_DIR/buildroot/output/host/bin"
 ESP_HOSTED_DIR="$ROOT_DIR/esp-hosted"
+DOCKER_IMAGE_NAME=rv1106-build
 
 # Debian configuration
 DEBIAN_KERNEL_VERSION="5.10.252"
@@ -64,9 +65,9 @@ setup_docker_env()
 
 start_docker_env()
 {
-    if ! docker image inspect rv1106-build > /dev/null 2> /dev/null; then
+    if ! docker image inspect $DOCKER_IMAGE_NAME > /dev/null 2> /dev/null; then
         printout "Building docker environment image"
-        docker build -t rv1106-build .
+        docker build -t $DOCKER_IMAGE_NAME .
     else
         printout "Docker image already built"
     fi
@@ -74,7 +75,7 @@ start_docker_env()
     docker run --rm -it --privileged \
         -v "$(realpath $(dirname $0)/..):/work" \
         --user "$(id -u):$(id -g)" \
-        rv1106-build
+        $DOCKER_IMAGE_NAME
 }
 
 unknown_command()

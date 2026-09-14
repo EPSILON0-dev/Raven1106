@@ -1,0 +1,23 @@
+#!/bin/sh
+
+set -eu
+
+if [ $# -ne 2 ]; then
+    echo "Usage: $0 <wifi-ssid> <wifi-password>"
+    exit 1
+fi
+
+insmod /lib/modules/$(uname -r)/libaes.ko || true
+insmod /lib/modules/$(uname -r)/libarc4.ko || true
+insmod /lib/modules/$(uname -r)/aes_generic.ko || true
+insmod /lib/modules/$(uname -r)/arc4.ko || true
+insmod /lib/modules/$(uname -r)/ecc.ko || true
+insmod /lib/modules/$(uname -r)/ecdh_generic.ko || true
+insmod /lib/modules/$(uname -r)/cfg80211.ko || true
+insmod /lib/modules/$(uname -r)/mac80211.ko || true
+insmod /lib/modules/$(uname -r)/bluetooth.ko || true
+insmod /lib/modules/$(uname -r)/esp32_spi.ko resetpin=2
+
+confname=`mktemp`
+wpa_passphrase $1 $2 > $confname
+wpa_supplicant -D nl80211 -i wlan0 -c $confname

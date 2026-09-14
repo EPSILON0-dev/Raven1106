@@ -3,7 +3,7 @@ default: all
 CONFIG_DIR                 := $(shell pwd)/configs
 IMAGE_DIR                  := $(shell pwd)/images
 OVERLAY_DIR				   := $(shell pwd)/overlay
-TOOLCHAIN_LINK		   := $(shell pwd)/toolchain
+TOOLCHAIN_LINK		       := $(shell pwd)/toolchain
 
 BUILDROOT_DIR              := $(shell pwd)/buildroot
 BUILDROOT_CONFIG           := $(shell pwd)/configs/buildroot-config
@@ -21,7 +21,7 @@ KERNEL_CONFIG              := $(shell pwd)/configs/kernel-config
 UBOOT_DIR                  := $(shell pwd)/uboot
 UBOOT_CONFIG			   := $(shell pwd)/configs/uboot-config 
 
-ESP_DRIVER_DIR		   := $(shell pwd)/esp-hosted/esp_hosted_ng/host
+ESP_DRIVER_DIR		       := $(shell pwd)/esp-hosted/host
 
 all: debian-image toolchain-link
 
