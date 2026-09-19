@@ -236,14 +236,15 @@ build_image()
     mcopy -i boot.vfat device-tree.dtb ::device-tree.dtb
 
     # Build the final image
-    printout "Generating Final Images"
     printout "Generating SD Image"
-    "$BR2_HOST_BIN/genimage" \
-        --rootpath "$(mktemp -d)" \
-        --tmppath "$(mktemp -d)" \
-        --inputpath "$IMAGE_DIR" \
-        --outputpath "$IMAGE_DIR" \
-        --config "$CONFIG_DIR/sdcard-image.cfg"
+    img_file=$IMAGE_DIR/sdcard.img
+    rm $img_file
+    truncate -s 68M $img_file
+    dd if=$IMAGE_DIR/env.img of=$img_file bs=1K seek=0 count=32 conv=notrunc
+    dd if=$IMAGE_DIR/idblock.img of=$img_file bs=1K seek=32 count=512 conv=notrunc
+    dd if=$IMAGE_DIR/uboot.img of=$img_file bs=1K seek=544 count=256 conv=notrunc
+    dd if=$IMAGE_DIR/boot.vfat of=$img_file bs=1M seek=4 count=64 conv=notrunc
+    dd if=$IMAGE_DIR/rootfs.ext4 of=$img_file oflag=append conv=notrunc
 }
 
 build_image_common()

@@ -134,7 +134,7 @@ buildroot-clean:
 ######################################################################
 
 ESP_DRIVER_BUILD_OPTS := \
-	CROSS_COMPILE=$(BUILDROOT_TOOLCHAIN_PREFIX) \
+	CROSS_COMPILE=$(LEGACY_TOOLCHAIN_PREFIX) \
 	KERNEL=$(KERNEL_DIR) \
 	ARCH=arm \
 	target=spi
