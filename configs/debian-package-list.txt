@@ -1,4 +1,5 @@
 systemd-sysv
+systemd-timesyncd
 ifupdown
 openssh-server
 sudo

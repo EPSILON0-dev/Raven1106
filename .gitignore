@@ -6,8 +6,4 @@
 toolchain/
 toolchain
 images/
-legacy-toolchain/
-buildroot-overlayfs/usr/ko/*
-tmp/
 debian/
-dl/

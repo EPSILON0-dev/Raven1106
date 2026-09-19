@@ -19,7 +19,7 @@ operating system images and all the patches needed to get everything working.
 - WiFi: ESP32C6 with ESP-Hosted firmware (_currently not functional_)
 - Kernel: Linux 5.10 (Rockchip BSP)
 - U-Boot: 2017.09 (Rockchip BSP)
-- OS images: Debian 12 (bookworm, armhf) or Buildroot (musl)
+- OS images: Debian 12 (bookworm, armhf)
 
 ## Why does it exist?
 
@@ -63,12 +63,10 @@ The board is designed in KiCad (4-layer). `pcb/` contains two revisions:
 
 | Path | Contents |
 |---|---|
-| `configs/` | Defconfigs (kernel, U-Boot, Buildroot, crosstool-ng), device tree source, SD image layout, U-Boot env, user table |
+| `configs/` | Defconfigs (kernel, U-Boot, crosstool-ng), device tree source, SD image layout, U-Boot env, user table |
 | `kernel/` | Linux 5.10 Rockchip BSP kernel |
 | `uboot/` | U-Boot 2017.09 Rockchip BSP |
-| `buildroot/` | Buildroot (2026.08-git) |
-| `buildroot-overlayfs/` | Rootfs overlay for the Buildroot image |
-| `debian/`, `debian-overlayfs/` | Debian rootfs staging area and overlay |
+| `debian/`, `overlayfs/` | Debian rootfs staging area and overlay |
 | `crosstool-ng/`, `legacy-toolchain/` | Legacy uClibc toolchain (kernel/U-Boot builds) |
 | `esp-hosted/` | ESP32-C6 host driver source (esp_hosted_ng) |
 | `rkbin/` | Rockchip binary blobs (DDR init, trust) |
@@ -93,13 +91,13 @@ make docker
 
 Before building any image build the legacy toolchain for the Kernel and U-Boot.
 ```sh
-make legacytoolchain
+make toolchain
 ```
 
 ### Debian image
 
 ```sh
-make            # default target: debian-image + toolchain-link
+make            # default target: debian-image
 # or explicitly:
 make debian-image
 ```
@@ -117,20 +115,9 @@ Notes:
 - Included packages: systemd, ifupdown, openssh-server, sudo, dhcp client,
   busybox, vim-tiny, ca-certificates (see `DEBIAN_PACKAGES` in
   `scripts/build.sh`).
-- Rootfs image size: 512 MB (`DEBIAN_ROOTFS_SIZE`).
+- Rootfs image size: 1 GB (`DEBIAN_ROOTFS_SIZE`).
 - For now there's no autoresize, run `sudo resize2fs /dev/mmcblk1p5` after
   the first boot.
-
-### Buildroot image
-
-```sh
-make br2-image
-```
-
-This builds the kernel, device tree, U-Boot, copies kernel modules into
-`buildroot-overlayfs/usr/ko/`, builds Buildroot with its rootfs overlay, and
-assembles `images/sdcard.img`. Default login: user `user`, password `raven`
-(from `configs/users.txt`).
 
 ### Component targets
 
@@ -139,11 +126,10 @@ assembles `images/sdcard.img`. Default login: user `user`, password `raven`
 | `make kernel` | Build the kernel using the legacy toolchain |
 | `make dtb` | Preprocess and compile `configs/device-tree.dts` into `images/` |
 | `make uboot` | Build U-Boot (SPL + idblock + uboot.img) |
-| `make buildroot` | Build the Buildroot rootfs |
 | `make espdriver` | Build the ESP32-C6 host driver against the kernel |
-| `make legacytoolchain` | Build the crosstool-ng uClibc toolchain |
+| `make toolchain` | Build the crosstool-ng uClibc toolchain |
 | `make docker` | Build/enter the Docker build environment |
-| `make *-clean` | Clean kernel / U-Boot / Buildroot build trees |
+| `make *-clean` | Clean kernel / U-Boot build trees |
 
 ### Configuration targets
 
@@ -153,18 +139,8 @@ Each of these copies the stored defconfig from `configs/`, opens
 ```sh
 make kernel-config
 make uboot-config
-make buildroot-config
-make legacytoolchain-config
+make toolchain-config
 ```
-
-### Toolchains
-
-Two toolchains are used:
-
-- **Legacy uClibc toolchain** (`legacy-toolchain/`, built with crosstool-ng):
-  used for the kernel and U-Boot.
-- **Buildroot musl toolchain** (`buildroot/output/host/`): used for the ESP
-  host driver. `make toolchain-link` symlinks it to `./toolchain`.
 
 ## Output artifacts
 

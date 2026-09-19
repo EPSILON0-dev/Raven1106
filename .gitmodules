@@ -1,6 +1,3 @@
-[submodule "buildroot"]
-	path = buildroot
-	url = https://github.com/buildroot/buildroot
 [submodule "kernel"]
 	path = kernel
 	url = https://github.com/rockchip-linux/kernel
