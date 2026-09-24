@@ -865,7 +865,7 @@ CONFIG_NF_TABLES=y
 # CONFIG_NFT_LIMIT is not set
 # CONFIG_NFT_MASQ is not set
 # CONFIG_NFT_REDIR is not set
-CONFIG_NFT_NAT=m
+CONFIG_NFT_NAT=y
 # CONFIG_NFT_TUNNEL is not set
 # CONFIG_NFT_OBJREF is not set
 # CONFIG_NFT_QUEUE is not set
