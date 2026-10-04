@@ -226,45 +226,40 @@
 	status = "okay";
 };
 
-&spi0 {
+/* WiFi communication over SDIO */
+/* Would probably be faster but I haven't managed to get it working */
+/*
+&sdio {
 	status = "okay";
-};
- 
-#include "rv1106-evb-cam.dtsi"
+	pinctrl-names = "default";
+	pinctrl-0 = <&sdmmc1m1_cmd &sdmmc1m1_clk &sdmmc1m1_bus4>;
+	max-frequency = <50000000>;
+	bus-width = <4>;
+	broken-cd;
 
-&csi2_dphy0 {
-	ports {
-		port@0 {
-			/delete-node/ endpoint@0;
-			/delete-node/ endpoint@2;
-			/delete-node/ endpoint@3;
-			/delete-node/ endpoint@4;
-			/delete-node/ endpoint@5;
-			/delete-node/ endpoint@6;
-			/delete-node/ endpoint@7;
-			/delete-node/ endpoint@8;
-			/delete-node/ endpoint@9;
-		};
+	esp32_sdio: esp32_sdio@0 {
+		compatible = "espressif,esp32-sdio";
+		reset-gpios = <&gpio0 RK_PA2 GPIO_ACTIVE_LOW>;
 	};
 };
+*/
 
-&i2c4 {
-	/delete-node/ sc530ai@30;
-	/delete-node/ sc3338@30;
-	/delete-node/ sc4336@30;
-	/delete-node/ os04a10@36;
-	/delete-node/ jx_k17@40;
-	/delete-node/ imx415@1a;
-	/delete-node/ sc450ai@30;
-	/delete-node/ sc401ai@30;
-	/delete-node/ sc200ai@30;
-};
+/* WiFi communication over SPI */
+/*
+&spi0 {
+	status = "okay";
 
-&sc3336 {
-	clocks = <&cru MCLK_REF_MIPI1>;
-	reset-gpios = <&gpio3 RK_PC4 GPIO_ACTIVE_HIGH>;
-	pinctrl-0 = <&mipi_refclk_out1>;
+	esp32_spi: esp32_spi@0 {
+		compatible = "espressif,esp32-spi";
+		reg = <0>;
+		spi-max-frequency = <1000000>;
+		spi-cpol;
+		reset-gpios = <&gpio0 RK_PA2 GPIO_ACTIVE_LOW>;
+		handshake-gpios = <&gpio1 RK_PC5 GPIO_ACTIVE_HIGH>;
+		data-ready-gpios = <&gpio1 RK_PC4 GPIO_ACTIVE_HIGH>;
+	};
 };
+*/
 
 &gpio0 {
     esp32c6_reset {
@@ -274,3 +269,4 @@
         line-name = "esp32c6-reset";
     };
 };
+ 

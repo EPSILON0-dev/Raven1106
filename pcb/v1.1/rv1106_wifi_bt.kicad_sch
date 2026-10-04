@@ -5073,6 +5073,39 @@
 		)
 		(uuid "18349553-4b5b-42d0-900a-23985ecf4723")
 	)
+	(text "<-- Data Ready\n"
+		(exclude_from_sim no)
+		(at 253.492 118.11 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "2dddee13-e501-40ce-a098-51c942a4e12c")
+	)
+	(text "<-- Handshake"
+		(exclude_from_sim no)
+		(at 160.782 65.278 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "40abcf8b-7523-457d-9da2-09f1a6bede6d")
+	)
+	(text "<-- Data Ready\n"
+		(exclude_from_sim no)
+		(at 160.782 67.564 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "888287c6-cdd3-41c7-9767-a7d7c5ba6e1f")
+	)
 	(text "Note: In case of problems with the connection, we can fall back to SPI \nas it's on the same GPIOs as the SDIO. Two additional GPIOs are routed\nto the RV1106 in case of conflict with UART4 or other peripherals."
 		(exclude_from_sim no)
 		(at 178.308 167.64 0)
@@ -5094,6 +5127,17 @@
 			(justify top)
 		)
 		(uuid "d7a2b68d-10c8-4a35-a7a7-b0071a35e787")
+	)
+	(text "<-- Handshake"
+		(exclude_from_sim no)
+		(at 253.492 115.824 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "f0b3365e-5321-4a95-baf4-5dac78254f4b")
 	)
 	(text "GPIOs 4, 5, 9 and 15 are also strapping pins,\nbut we don't use them in this design."
 		(exclude_from_sim no)
