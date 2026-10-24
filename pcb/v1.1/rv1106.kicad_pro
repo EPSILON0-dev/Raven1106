@@ -620,9 +620,9 @@
     "last_paths": {
       "idf": "",
       "netlist": "",
-      "plot": "images",
+      "plot": "gerber",
       "specctra_dsn": "",
-      "step": "",
+      "step": "rv1106.glb",
       "vrml": ""
     },
     "page_layout_descr_file": ""

@@ -2,13 +2,15 @@
 
 Raspberry Pi-like single board computer based on the Rockchip RV1106G3.
 
-![Assembled Board Photo](docs/pcb-images/photo.jpg)
+| ![Assembled Board Photo](docs/pcb-images/photo.jpg) | ![Board Render](docs/pcb-images/render.jpg) |
+| - | - |
+| | |
 
 ## Overview
 
 Raven1106 is a custom open-hardware SBC. This repository contains everything
 related to the project including: the board schematics and the PCB design, build
-scripts, configurations, device trees and file system overlays for the 
+scripts, configurations, device trees and file system overlays for the
 operating system images and all the patches needed to get everything working.
 
 - CPU: Single-core Cortex-A7 @ 1.6 GHz
@@ -25,7 +27,7 @@ operating system images and all the patches needed to get everything working.
 
 TLDR: It's a learning project
 
-> The main goal of this project was to be a learning experience for designing complex high-speed digital PCBs. Creating an SBC that is almost capable enough to do basic tasks like hosting simple servers or running AI harnesses is a nice bonus. RV1106 was chosen specifically for its simplicity, integrated RAM meant no DDR routing and QFN package meant I could solder the board manually relatively easily. 
+> The main goal of this project was to be a learning experience for designing complex high-speed digital PCBs. Creating an SBC that is almost capable enough to do basic tasks like hosting simple servers or running AI harnesses is a nice bonus. RV1106 was chosen specifically for its simplicity, integrated RAM meant no DDR routing and QFN package meant I could solder the board manually relatively easily.
 
 > What this chip lacked in the hardware it made up for in the software side of things -- BSP is absolutely terrible, outdated, barely documented (_though with a lot of spelling mistakes_). Programming it wasn't much better either with only a few barely working flashing tools and a USB controller that might not actually be compliant with the USB spec, as most machines can't even enumerate it. It might have been genuinely easier to make this project around a more complex BGA part than this SoC.
 
