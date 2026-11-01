@@ -7,3 +7,8 @@ toolchain/
 toolchain
 images/
 debian/
+
+# Docker "home" artifacts
+.bash_history
+.viminfo
+.wget-hsts

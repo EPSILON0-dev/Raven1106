@@ -1553,7 +1553,7 @@ CONFIG_WIREGUARD_DEBUG=y
 # CONFIG_GTP is not set
 # CONFIG_MACSEC is not set
 # CONFIG_NETCONSOLE is not set
-# CONFIG_TUN is not set
+CONFIG_TUN=y
 # CONFIG_TUN_VNET_CROSS_LE is not set
 CONFIG_VETH=y
 # CONFIG_NLMON is not set

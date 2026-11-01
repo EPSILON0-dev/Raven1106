@@ -1,0 +1,29 @@
+#!/bin/sh
+
+echo 2 > /sys/class/gpio/export
+echo out > /sys/class/gpio/gpio2/direction 
+echo 0 > /sys/class/gpio/gpio2/value 
+sleep 0.1
+echo in > /sys/class/gpio/gpio2/direction 
+echo 2 > /sys/class/gpio/unexport
+sleep 2
+
+echo "Assuming module rebooted?..."
+cd /lib/modules/5.10.252/
+insmod libaes.ko 
+insmod libarc4.ko 
+insmod ecc.ko 
+insmod ecdh_generic.ko 
+insmod bluetooth.ko 
+insmod cfg80211.ko 
+insmod esp32_sdio.ko
+sleep 5
+
+echo "Assuming module connected?..."
+wpa_passphrase ssid password | tee /tmp/wpa.conf
+wpa_supplicant -iwlan0 -c/tmp/wpa.conf &
+sleep 15
+
+echo "Assuming connected?..."
+ip addr add 192.168.0.100/24 dev wlan0
+ip route replace default via 192.168.0.1 dev wlan0

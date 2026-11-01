@@ -1,0 +1,14 @@
+[Unit]
+Description=Start Network
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/start-network
+User=root
+StandardOutput=append:/tmp/wifi.log
+StandardError=append:/tmp/wifi.log
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

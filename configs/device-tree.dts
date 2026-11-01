@@ -227,8 +227,6 @@
 };
 
 /* WiFi communication over SDIO */
-/* Would probably be faster but I haven't managed to get it working */
-/*
 &sdio {
 	status = "okay";
 	pinctrl-names = "default";
@@ -242,7 +240,6 @@
 		reset-gpios = <&gpio0 RK_PA2 GPIO_ACTIVE_LOW>;
 	};
 };
-*/
 
 /* WiFi communication over SPI */
 /*
@@ -261,6 +258,7 @@
 };
 */
 
+/*
 &gpio0 {
     esp32c6_reset {
         gpio-hog;
@@ -269,4 +267,4 @@
         line-name = "esp32c6-reset";
     };
 };
- 
+*/ 

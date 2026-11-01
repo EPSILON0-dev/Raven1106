@@ -177,3 +177,57 @@ sudo dd if=images/sdcard.img of=/dev/sdX bs=4M status=progress conv=fsync
 ```
 
 Serial console: `ttyFIQ0` at 115200 baud.
+
+## WiFi setup
+
+The WiFi interface (ESP32-C6 running ESP-Hosted firmware over SDIO) is set up
+at boot on a running system, it is not configured during the image build. The
+helper script `overlayfs/usr/local/bin/start-network` (installed on the image
+at `/usr/local/bin/start-network`) performs the entire sequence:
+
+1. **Module reset** - GPIO 2 is exported, pulsed low and released, which
+   resets the ESP32. The pin is then unexported and the script waits 2 s.
+2. **Driver loading** - the required modules are inserted from
+   `/lib/modules/5.10.252/`: the crypto primitives (`libaes`, `libarc4`,
+   `ecc`, `ecdh_generic`), `bluetooth`, the wireless stack (`cfg80211`) and
+   finally the ESP-Hosted SDIO host driver (`esp32_sdio.ko`). The script then
+   waits 5 s for the module to appear as `wlan0`.
+   (The host driver is built separately with `make espdriver`.)
+3. **Association** - `wpa_passphrase <ssid> <password>` generates a config
+   into `/tmp/wpa.conf` and `wpa_supplicant -iwlan0` is started in the
+   background, followed by a 15 s wait for the connection to come up.
+4. **Addressing** - static IP configuration:
+   `192.168.0.100/24` on `wlan0` with the default route via `192.168.0.1`.
+
+### Configuring the network
+
+The SSID, passphrase and addresses are hardcoded in
+`/usr/local/bin/start-network`, so edit them on the board (or in
+`overlayfs/usr/local/bin/start-network` and rebuild/flash the image):
+
+```sh
+sudo vi /usr/local/bin/start-network
+```
+
+Replace `ssid` and `password` in the `wpa_passphrase` call with your network
+name and passphrase, and adjust the `ip addr add` and `ip route replace
+default via` lines for your address and gateway. There is no DHCP client call
+for `wlan0`.
+
+### systemd service
+
+The script runs automatically at boot via the systemd unit
+`overlayfs/etc/systemd/system/start-network.service`
+(`/etc/systemd/system/start-network.service` on the image) - a `oneshot`
+service started after `network.target`, running as root with
+`RemainAfterExit=yes`, and logging all output to `/tmp/wifi.log`. Use it to
+start/stop the WiFi bring-up manually or to check the log:
+
+```sh
+sudo systemctl start start-network
+sudo systemctl status start-network
+less /tmp/wifi.log
+```
+
+> Note: the ESP32 must already carry the ESP-Hosted firmware (flash the
+> bootloader/ESP before soldering it, see the PCB section above).

@@ -71,6 +71,8 @@ start_docker_env()
     fi
 
     sudo docker run --rm -it --privileged \
+        --user builder \
+        -e HOME=/work \
         -v "$(realpath $(dirname $0)/..):/work" \
         $DOCKER_IMAGE_NAME
 }
@@ -240,7 +242,7 @@ build_image()
     # Build the final image
     printout "Generating SD Image"
     img_file=$IMAGE_DIR/sdcard.img
-    rm $img_file
+    rm $img_file || true
     truncate -s 68M $img_file
     dd if=$IMAGE_DIR/env.img of=$img_file bs=1K seek=0 count=32 conv=notrunc
     dd if=$IMAGE_DIR/idblock.img of=$img_file bs=1K seek=32 count=512 conv=notrunc
