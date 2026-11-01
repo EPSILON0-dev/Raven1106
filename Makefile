@@ -110,7 +110,7 @@ ESP_DRIVER_BUILD_OPTS := \
 	CROSS_COMPILE=$(TOOLCHAIN_PREFIX) \
 	KERNEL=$(KERNEL_DIR) \
 	ARCH=arm \
-	target=spi
+	target=sdio
 
 espdriver:
 	make -C $(ESP_DRIVER_DIR) $(ESP_DRIVER_BUILD_OPTS) -j`nproc`
